@@ -3,7 +3,7 @@ var util         = require('util');
 var EventEmitter = require('events').EventEmitter;
 var retry        = require('async-retry');
 var debug        = require('debug')('rpi-gpio');
-var Epoll        = require('epoll').Epoll;
+//var Epoll        = require('epoll').Epoll;
 
 var PATH = '/sys/class/gpio';
 var PINS = {
@@ -411,26 +411,26 @@ function Gpio() {
      * @param {function}    cb Callback which receives the channel's err
      */
     function listen(channel, onChange) {
-        var pin = getPinForCurrentMode(channel);
+        // var pin = getPinForCurrentMode(channel);
 
-        if (!exportedInputPins[pin] && !exportedOutputPins[pin]) {
-            throw new Error('Channel %d has not been exported', channel);
-        }
+        // if (!exportedInputPins[pin] && !exportedOutputPins[pin]) {
+        //     throw new Error('Channel %d has not been exported', channel);
+        // }
 
-        debug('listen for pin %d', pin);
-        var poller = new Epoll(function(err, innerfd, events) {
-            if (err) throw err
-            clearInterrupt(innerfd);
-            onChange(channel);
-        });
+        // debug('listen for pin %d', pin);
+        // var poller = new Epoll(function(err, innerfd, events) {
+        //     if (err) throw err
+        //     clearInterrupt(innerfd);
+        //     onChange(channel);
+        // });
 
-        var fd = fs.openSync(PATH + '/gpio' + pin + '/value', 'r+');
-        clearInterrupt(fd);
-        poller.add(fd, Epoll.EPOLLPRI);
-        // Append ready-to-use remove function
-        pollers[pin] = function() {
-            poller.remove(fd).close();
-        }
+        // var fd = fs.openSync(PATH + '/gpio' + pin + '/value', 'r+');
+        // clearInterrupt(fd);
+        // poller.add(fd, Epoll.EPOLLPRI);
+        // // Append ready-to-use remove function
+        // pollers[pin] = function() {
+        //     poller.remove(fd).close();
+        // }
     };
 }
 util.inherits(Gpio, EventEmitter);
